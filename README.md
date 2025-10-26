@@ -44,8 +44,19 @@ vsce package
 
 # Create a version tag
 git tag v1.0.X
+git push origin v1.0.X
 
 git push origin v0.0.1
+
+## Upload VSIX to GitHub
+
+1. Go to: `https://github.com/MemberSplash/vscode-wordpress-debug-mode/releases`
+2. Click **"Create a new release"**
+3. Select the tag: `v1.0.X`
+4. Title: `v1.0.X`
+5. Description: `Initial release - Lando/Docker compatible WordPress debug settings`
+6. **Drag and drop** the `wordpress-debug-mode-1.0.X.vsix` file into the assets section
+7. Click **"Publish release"**
 ```
 
 ## Releases
