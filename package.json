@@ -3,12 +3,12 @@
 	"displayName": "WordPress Debug",
 	"description": "Quickly enable or disable debug mode",
 	"version": "0.0.1",
-	"publisher": "Member Splash",
+	"publisher": "membersplash",
 	"engines": {
 		"vscode": "^1.105.0"
 	},
 	"categories": [
-		"Other"
+		"WordPress"
 	],
 	"activationEvents": [],
 	"repository": {
