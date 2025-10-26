@@ -17,9 +17,11 @@ Launch initially by using Control + Shift + P to open the Command menu and then 
 # Installation
 1. Go to the Releases page
 2. Download the `.vsix` file from the latest release
-  <img width="580" height="477" alt="image" src="https://github.com/user-attachments/assets/81f97def-f8a5-4981-b9a6-d9220683a5e8" />
+   <img width="580" height="477" alt="image" src="https://github.com/user-attachments/assets/81f97def-f8a5-4981-b9a6-d9220683a5e8" />
 
 4. Install it in VS Code
+   <img width="576" height="262" alt="image" src="https://github.com/user-attachments/assets/50d532fc-308c-4bb6-802b-71dc02cb8b3f" />
+
 
 # Local Dev
 ```
