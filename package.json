@@ -25,24 +25,28 @@
 	},
 	"main": "./extension.js",
 	"contributes": {
-		"commands": [
-			{
-				"command": "wordpress-debug-mode.enable",
-				"title": "WordPress: Enable debug mode"
-			},
-			{
-				"command": "wordpress-debug-mode.disable",
-				"title": "WordPress: Disable debug mode"
-			},
-			{
-				"command": "wordpress-debug-mode.open",
-				"title": "WordPress: Edit wp-config.php file"
-			},
-			{
-				"command": "wordpress-debug-mode.reveal",
-				"title": "WordPress: Reveal wp-config.php in Finder"
-			}
-		]
+    "commands": [
+        {
+            "command": "wordpress-debug-mode.settings",
+            "title": "WordPress: Configuration Settings"
+        },
+        {
+            "command": "wordpress-debug-mode.enable",
+            "title": "WordPress: Enable debug mode"
+        },
+        {
+            "command": "wordpress-debug-mode.disable",
+            "title": "WordPress: Disable debug mode"
+        },
+        {
+            "command": "wordpress-debug-mode.open",
+            "title": "WordPress: Edit wp-config.php file"
+        },
+        {
+            "command": "wordpress-debug-mode.reveal",
+            "title": "WordPress: Reveal wp-config.php in Finder"
+        }
+    ]
 	},
 	"scripts": {
 		"lint": "eslint .",

@@ -86,8 +86,191 @@ function toggleConfigParam(filePath = false, search = '', value = '') {
     });
 }
 
+// Create menu for enabling / disabling constants
+function getCurrentConfigValue(filePath, setting) {
+    try {
+        const data = fs.readFileSync(filePath, 'utf-8');
+        let regex;
+        
+        switch(setting) {
+            case 'WP_DEBUG':
+                regex = /define\(\s*'WP_DEBUG'\s*,\s*(\w+)\s*\);/i;
+                break;
+            case 'WP_ENVIRONMENT_TYPE':
+                regex = /define\(\s*'WP_ENVIRONMENT_TYPE'\s*,\s*'(\w+)'\s*\);/i;
+                break;
+            case 'SENDGRID_DEV':
+                regex = /define\(\s*'SENDGRID_DEV'\s*,\s*(\w+)\s*\);/i;
+                break;
+        }
+        
+        const match = data.match(regex);
+        return match ? match[1] : null;
+    } catch (err) {
+        console.error('Error reading config value:', err);
+        return null;
+    }
+}
+
+function toggleSetting(filePath, setting, newValue) {
+    console.log(`Toggling ${setting} to ${newValue}`);
+    return new Promise((resolve, reject) => {
+        fs.readFile(filePath, 'utf-8', (err, data) => {
+            if (err) {
+                console.error('Error reading file:', err);
+                reject(err);
+                return;
+            }
+            
+            let regex, replacement;
+            
+            switch(setting) {
+                case 'WP_DEBUG':
+                    regex = /define\(\s*'WP_DEBUG'\s*,\s*\w+\s*\);/i;
+                    replacement = `define( 'WP_DEBUG', ${newValue} );`;
+                    break;
+                case 'WP_ENVIRONMENT_TYPE':
+                    regex = /define\(\s*'WP_ENVIRONMENT_TYPE'\s*,\s*'\w+'\s*\);/i;
+                    replacement = `define( 'WP_ENVIRONMENT_TYPE', '${newValue}' );`;
+                    break;
+                case 'SENDGRID_DEV':
+                    regex = /define\(\s*'SENDGRID_DEV'\s*,\s*\w+\s*\);/i;
+                    replacement = `define( 'SENDGRID_DEV', ${newValue} );`;
+                    break;
+            }
+            
+            if (!regex.test(data)) {
+                reject(new Error(`${setting} not found in wp-config.php`));
+                return;
+            }
+            
+            data = data.replace(regex, replacement);
+            
+            fs.writeFile(filePath, data, 'utf-8', (err) => {
+                if (err) {
+                    console.error('Error writing file:', err);
+                    reject(err);
+                    return;
+                }
+                resolve();
+            });
+        });
+    });
+}
+
+async function showSettingsMenu(configFilePath) {
+    // Get current values
+    const wpDebug = getCurrentConfigValue(configFilePath, 'WP_DEBUG');
+    const envType = getCurrentConfigValue(configFilePath, 'WP_ENVIRONMENT_TYPE');
+    const sendgridDev = getCurrentConfigValue(configFilePath, 'SENDGRID_DEV');
+    
+    // Create menu items
+    const items = [
+        {
+            label: `$(debug-alt) WP_DEBUG`,
+            description: `Currently: ${wpDebug || 'not found'}`,
+            detail: 'Toggle WordPress debug mode',
+            setting: 'WP_DEBUG',
+            currentValue: wpDebug
+        },
+        {
+            label: `$(server-environment) WP_ENVIRONMENT_TYPE`,
+            description: `Currently: ${envType || 'not found'}`,
+            detail: 'Switch between production and development',
+            setting: 'WP_ENVIRONMENT_TYPE',
+            currentValue: envType
+        },
+        {
+            label: `$(mail) SENDGRID_DEV`,
+            description: `Currently: ${sendgridDev || 'not found'}`,
+            detail: 'Toggle SendGrid development mode',
+            setting: 'SENDGRID_DEV',
+            currentValue: sendgridDev
+        }
+    ];
+    
+    const selected = await vscode.window.showQuickPick(items, {
+        placeHolder: 'Select a setting to change',
+        title: 'WordPress Configuration Settings'
+    });
+    
+    if (!selected) return;
+    
+    // Determine what the new value should be
+    let newValue;
+    
+    if (selected.setting === 'WP_ENVIRONMENT_TYPE') {
+        const envOptions = [
+            { label: 'production', picked: selected.currentValue === 'production' },
+            { label: 'development', picked: selected.currentValue === 'development' },
+            { label: 'staging', picked: selected.currentValue === 'staging' },
+            { label: 'local', picked: selected.currentValue === 'local' }
+        ];
+        
+        const envChoice = await vscode.window.showQuickPick(envOptions, {
+            placeHolder: 'Select environment type',
+            title: 'WP_ENVIRONMENT_TYPE'
+        });
+        
+        if (!envChoice) return;
+        newValue = envChoice.label;
+    } else {
+        // Toggle true/false for WP_DEBUG and SENDGRID_DEV
+        newValue = selected.currentValue === 'true' ? 'false' : 'true';
+    }
+    
+    // Apply the change
+    try {
+        await toggleSetting(configFilePath, selected.setting, newValue);
+        vscode.window.showInformationMessage(
+            `✓ ${selected.setting} set to ${newValue}`
+        );
+        
+        // Show menu again so they can make more changes
+        const again = await vscode.window.showQuickPick(['Yes', 'No'], {
+            placeHolder: 'Change another setting?'
+        });
+        
+        if (again === 'Yes') {
+            showSettingsMenu(configFilePath);
+        }
+    } catch (err) {
+        vscode.window.showErrorMessage(`Error updating ${selected.setting}: ${err.message}`);
+    }
+}
+
 function activate(context) {
     console.log('WordPress Debug Mode extension activated');
+    
+    // Add the settings menu command
+    let menuCommand = vscode.commands.registerCommand('wordpress-debug-mode.settings', () => {
+        try {
+            const filePath = currentPageUri();
+            
+            if (!filePath) {
+                vscode.window.showInformationMessage('Please open a WordPress file first.');
+                return;
+            }
+            
+            const fileName = filePath.fsPath.split('/').pop();
+            const fileDir = filePath.fsPath.replace(fileName, '');
+            const configFile = getConfigPath(fileDir);
+            
+            if (!configFile) {
+                vscode.window.showInformationMessage('Unable to find wp-config.php');
+                return;
+            }
+            
+            showSettingsMenu(configFile.path);
+        } catch (error) {
+            console.error('Error opening settings menu:', error);
+            vscode.window.showErrorMessage('Error: ' + error.message);
+        }
+    });
+    
+    context.subscriptions.push(menuCommand);
+    
+    // Existing enable/disable/reveal/open commands
     const actions = ['enable', 'disable', 'reveal', 'open'];
     actions.forEach(action => {
         let disposable = vscode.commands.registerCommand(`wordpress-debug-mode.${action}`, () => {
