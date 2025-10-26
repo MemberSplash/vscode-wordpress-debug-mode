@@ -14,6 +14,39 @@ Launch initially by using Control + Shift + P to open the Command menu and then 
 
 <img width="541" height="166" alt="image" src="https://github.com/user-attachments/assets/2f43477f-aa09-4316-ae1b-e924d748f96d" />
 
+# Installation
+Download the latest release from Github and then install from .vsix file
+
+# Local Dev
+```
+# Clone the repo
+git clone git@github.com:MemberSplash/vscode-wordpress-debug-mode.git
+cd vscode-wordpress-debug-mode
+
+# Install dependencies
+npm install
+
+# Symlink to VS Code extensions
+ln -s "$(pwd)" ~/.vscode/extensions/vscode-wordpress-debug-mode
+
+# Reload VS Code
+```
+
+# Build for Release
+```javascript
+cd ~/Playground/VSCode\ Extensions/vscode-wordpress-debug-mode
+
+# Install vsce if you don't have it
+npm install -g @vscode/vsce
+
+# Package the extension. This creates: wordpress-debug-mode-0.0.1.vsix
+vsce package
+
+# Create a version tag
+git tag v0.0.1
+
+git push origin v0.0.1
+```
 
 ## Releases
 
