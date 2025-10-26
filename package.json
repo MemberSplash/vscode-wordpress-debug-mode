@@ -3,48 +3,44 @@
 	"displayName": "WordPress Debug",
 	"description": "Quickly enable or disable debug mode",
 	"version": "0.0.1",
-	"publisher": "biati",
+	"publisher": "Member Splash",
 	"engines": {
-		"vscode": "^1.49.0"
+		"vscode": "^1.105.0"
 	},
 	"categories": [
 		"Other"
 	],
-	"activationEvents": [
-		"onCommand:wordpress-debug-mode.enable",
-		"onCommand:wordpress-debug-mode.disable",
-		"onCommand:wordpress-debug-mode.open",
-		"onCommand:wordpress-debug-mode.reveal"
-	],
+	"activationEvents": [],
 	"repository": {
-	    "type": "git",
-	    "url": "https://github.com/biati-digital/vscode-wordpress-debug-mode.git"
+		"type": "git",
+		"url": "https://github.com/wunderdojo/vscode-wordpress-debug-mode"
 	},
 	"bugs": {
-	    "url": "https://github.com/biati-digital/vscode-wordpress-debug-mode/issues"
+		"url": "https://github.com/wunderdojo/vscode-wordpress-debug-mode/issues"
 	},
 	"icon": "assets/icon.png",
 	"galleryBanner": {
-	    "color": "#0073aa",
-	    "theme": "dark"
+		"color": "#0073aa",
+		"theme": "dark"
 	},
 	"main": "./extension.js",
 	"contributes": {
-		"commands": [{
-		        "command": "wordpress-debug-mode.enable",
-		        "title": "WordPress: Enable debug mode"
-		    },
-		    {
-		        "command": "wordpress-debug-mode.disable",
-		        "title": "WordPress: Disable debug mode"
+		"commands": [
+			{
+				"command": "wordpress-debug-mode.enable",
+				"title": "WordPress: Enable debug mode"
 			},
 			{
-			    "command": "wordpress-debug-mode.open",
-			    "title": "WordPress: Edit wp-config.php file"
+				"command": "wordpress-debug-mode.disable",
+				"title": "WordPress: Disable debug mode"
 			},
 			{
-			    "command": "wordpress-debug-mode.reveal",
-			    "title": "WordPress: Reveal wp-config.php in Finder"
+				"command": "wordpress-debug-mode.open",
+				"title": "WordPress: Edit wp-config.php file"
+			},
+			{
+				"command": "wordpress-debug-mode.reveal",
+				"title": "WordPress: Reveal wp-config.php in Finder"
 			}
 		]
 	},
@@ -54,13 +50,13 @@
 		"test": "node ./test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.49.0",
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.0",
 		"@types/node": "^14.0.27",
+		"@types/vscode": "^1.49.0",
 		"eslint": "^7.9.0",
 		"glob": "^7.1.6",
-		"mocha": "^8.1.3",
+		"mocha": "^11.7.4",
 		"typescript": "^4.0.2",
 		"vscode-test": "^1.4.0"
 	}
