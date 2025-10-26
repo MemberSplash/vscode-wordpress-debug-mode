@@ -2,7 +2,7 @@
 	"name": "wordpress-debug-mode",
 	"displayName": "WordPress Debug",
 	"description": "Quickly enable or disable debug mode",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"publisher": "membersplash",
 	"engines": {
 		"vscode": "^1.105.0"
